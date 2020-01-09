@@ -790,7 +790,7 @@ def onboard(request, flow=None):
         return JsonResponse({'OK': True})
 
     params = {
-        'title': _('Onboarding Flow'),
+        'title': _('EthDenver Avatar Builder'),
         'steps': steps or onboard_steps,
         'flow': flow,
         'profile': profile,
