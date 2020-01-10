@@ -158,8 +158,8 @@ class CustomAvatar(BaseAvatar):
         return avatar
 
     @classmethod
-    def create_3d(cls, profile, params, svg):
-        avatar = cls(profile=profile, config=params, style='3d', svg=svg)
+    def create_3d(profile, params, svg):
+        avatar = cls(config=params, style='3d', svg=svg)
 
         with NamedTemporaryFile(mode='w+', suffix='.svg') as tmp:
             tmp.write(svg)

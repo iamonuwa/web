@@ -104,8 +104,7 @@ $(document).ready(function() {
       dataType: 'json',
       contentType: 'application/json; charset=utf-8',
       success: function(response) {
-        _alert({ message: gettext('Your Avatar Has Been Saved To your Gitcoin Profile!')}, 'success');
-        changeStep(1);
+        _alert({ message: gettext('Your avatar has been saved using your eth address on 3box!')}, 'success');
       },
       error: function(response) {
         let text = gettext('Error occurred while saving. Please try again.');
@@ -118,7 +117,8 @@ $(document).ready(function() {
       }
     });
   }
-  $('#save-3d-avatar').click(function() {
+  $('#save-3d-avatar').click(function(event) {
+    event.preventDefault()
     save3DAvatar();
   });
 

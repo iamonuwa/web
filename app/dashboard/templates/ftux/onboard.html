@@ -30,7 +30,6 @@
   </head>
   <body class="g-font-muli">
     {% include 'shared/tag_manager_2.html' %}
-    {% include 'shared/top_nav.html' with class='d-md-flex' %}
     <div class="container-fluid header dash">
       {% include 'home/nav.html' %}
     </div>
@@ -47,12 +46,6 @@
               {% include 'ftux/'|add:step|add:'.html' %}
             </div>
           {% endfor %}
-          {% if github_handle %}
-          <div class="controls">
-            <p id="prev-btn" class="button button--primary-o button--controls" onclick="changeStep(-1)">{% trans "Previous" %}</p>
-            <p id="next-btn" class="button button--primary button--controls" onclick="changeStep(1)">{% trans "Next" %}</p>
-          </div>
-          {% endif %}
         </form>
       </div>
     </div>
@@ -63,7 +56,6 @@
   {% csrf_token %}
   <script>
     var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
-    var jobLocations = {% if profile.job_location %}{{profile.job_location|safe }};{% else %}[];{% endif %}
   </script>
   <script>
     var steps = [];
@@ -73,7 +65,6 @@
     {% endfor %};
   </script>
   <script src="{% static "v2/js/pages/onboard.js" %}"></script>
-  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBaJ6gEXMqjw0Y7d5Ps9VvelzOOvfV6BvQ&libraries=places&callback=initPlacecomplete"></script>
   <script src="{% static "v2/js/jobs.js" %}"></script>
   <script src="{% static "v2/js/avatar_builder.js" %}" defer></script>
   <script src="/dynamic/js/tokens_dynamic.js"></script>

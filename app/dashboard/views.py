@@ -751,23 +751,8 @@ def onboard_avatar(request):
 
 
 def onboard(request, flow=None):
-    """Handle displaying the first time user experience flow."""
-    if flow not in ['funder', 'contributor', 'profile']:
-        if not request.user.is_authenticated:
-            raise Http404
-        target = 'funder' if request.user.profile.persona_is_funder else 'contributor'
-        new_url = f'/onboard/{target}'
-        return redirect(new_url)
-    elif flow == 'funder':
-        onboard_steps = ['github', 'metamask', 'avatar']
-    elif flow == 'contributor':
-        onboard_steps = ['github', 'metamask', 'avatar', 'skills', 'job']
-    elif flow == 'profile':
-        onboard_steps = ['avatar']
-
-    profile = None
-    if request.user.is_authenticated and getattr(request.user, 'profile', None):
-        profile = request.user.profile
+    """Handle ethdenver conference buffalo avatar builder."""
+    builder_steps = ['avatar']
 
     steps = []
     if request.GET:
@@ -775,30 +760,13 @@ def onboard(request, flow=None):
         if steps:
             steps = steps.split(',')
 
-    if (steps and 'github' not in steps) or 'github' not in onboard_steps:
-        if not request.user.is_authenticated or request.user.is_authenticated and not getattr(
-            request.user, 'profile', None
-        ):
-            login_redirect = redirect('/login/github?next=' + request.get_full_path())
-            return login_redirect
-
-    if request.GET.get('eth_address') and request.user.is_authenticated and getattr(request.user, 'profile', None):
-        profile = request.user.profile
-        eth_address = request.GET.get('eth_address')
-        profile.preferred_payout_address = eth_address
-        profile.save()
-        return JsonResponse({'OK': True})
-
     params = {
         'title': _('EthDenver Avatar Builder'),
-        'steps': steps or onboard_steps,
-        'flow': flow,
-        'profile': profile,
+        'steps': steps or builder_steps,
         '3d_avatar_params': None if 'avatar' not in steps else avatar3dids_helper(),
         'possible_skin_tones': skin_tones,
         'possible_hair_tones': hair_tones,
     }
-    params.update(get_avatar_context_for_user(request.user))
     return TemplateResponse(request, 'ftux/onboard.html', params)
 
 
