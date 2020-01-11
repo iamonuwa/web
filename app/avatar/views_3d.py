@@ -157,8 +157,6 @@ def avatar3d(request):
             if base_tone:
                 for _from, to in get_avatar_tone_map(_type, base_tone).items():
                     output = output.replace(_from, to)
-        if request.method == 'POST':
-            return save_custom_avatar(request, output)
         response = HttpResponse(output, content_type='image/svg+xml')
     return response
 
@@ -181,23 +179,3 @@ def avatar3dids(request):
     """Serve an 3d avatar id list."""
     response = JsonResponse(avatar3dids_helper())
     return response
-
-
-def save_custom_avatar(request, output):
-    """Save the Custom Avatar."""
-    response = {'status': 200, 'message': 'Avatar saved'}
-    payload = dict(request.GET)
-    print(payload)
-    # try:
-    #     with transaction.atomic():
-    #         custom_avatar = CustomAvatar.create_3d(profile, payload, output)
-    #         custom_avatar.save()
-    #         print(custom_avatar)
-    #         # profile.activate_avatar(custom_avatar.pk)
-    #         # profile.save()
-    #         # create_user_action(profile.user, 'updated_avatar', request)
-    #         response['custom_avatar'] = custom_avatar
-    #         response['message'] = 'Avatar updated'
-    # except Exception as e:
-    #     logger.exception(e)
-    return JsonResponse(response, status=response['status'])
