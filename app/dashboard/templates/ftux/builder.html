@@ -1,0 +1,127 @@
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+
+{% load i18n static %}
+<!DOCTYPE html>
+<html>
+  <head>
+    {% include 'shared/head.html' %}
+    {% include 'shared/cards.html' %}
+    <meta name="title" content="Developers! Get Started with Gitcoin | Gitcoin">
+    <meta name="description" content="Use Gitcoin to find paid work and solve real world problems in the blockchain/web3 ecosystem. Receive payment in (ETH or any ERC-20 token).">
+    <link rel="stylesheet" href={% static "v2/css/onboard.css" %}>
+    <link rel="stylesheet" href={% static "v2/css/avatar_builder.css" %}>
+    <link rel="stylesheet" href={% static "v2/css/avatar.css" %}>
+  </head>
+  <body class="g-font-muli">
+    {% include 'shared/tag_manager_2.html' %}
+    <div class="container-fluid header dash">
+      {% include 'home/nav.html' %}
+    </div>
+    <div class="row">
+      <div class="col-12 col-sm-10 m-auto">
+        <form id="onboarding">
+          <div class="state">
+            {% for step in steps %}
+              <span class="step-state"></span>
+            {% endfor %}
+          </div>
+          <ul id="avatar-tabs" class="nav nav-tabs my-5" role="tablist">
+            <li class="nav-item">
+              <a class="nav-link nav-line active" data-toggle="tab" href="#avatars-builder-3d-tab" data-toggle="avatars-builder-3d-tab" role="tab">Avatar Builder (3d)</a>
+            </li>
+          </ul>
+            
+            <div class="tab-pane fade show active" id="avatars-builder-3d-tab" role="tabpanel">
+              <div id="avatars-builder-3d">
+                <div class="text-muted text-cetner empty-avatars">Build Your 3d Avatar</div>
+                <div class="avatars-container">
+                  <img id=tdavatartarget src="/avatar/view3d">
+                </div>
+                  <button type="button" id="random-3d-avatar-button" class="button button--primary">
+                    Random Avatar
+                  </button>
+                  <button type="button" id="save-3d-avatar" class="button button--primary">
+                    Save Avatar
+                  </button>
+                  <div id=skin_tones class=tones>
+                    Skin:
+                    {% for st in possible_skin_tones %}
+                    <li data-tone='{{st}}' style="background-color: #{{st}}">
+                      &nbsp;
+                    </li>
+                    {% endfor %}
+                  </div>
+                  <div id=hair_tones class=tones>
+                    Hair:
+                    {% for ht in possible_hair_tones %}
+                    <li data-tone='{{ht}}' style="background-color: #{{ht}}">
+                      &nbsp;
+                    </li>
+                    {% endfor %}
+                  </div>
+                <div class="action-buttons">
+                  {% for category, ids in 3d_avatar_params.by_category.items %}
+                    <a href="#" class="select_avatar_type {{category}}" data-target="{{category}}">{{category}}</a>
+                  {% endfor %}
+                </div>
+                <div class="targets">
+                  {% for category, ids in 3d_avatar_params.by_category.items %}
+                    <div class="category {{category}} {% if category != 'background' %}hidden{%endif%}">
+                      {% for id in ids %}
+                        <img class=tdselection data-id="{{id}}" data-src="/avatar/view3d?mode=preview&ids={{id}}" data-altsrc="/avatar/view3d?mode=preview&ids={{id}}" {% if category == 'background' %}src="/avatar/view3d?mode=preview&ids={{id}}"{%endif%}>            
+                      {% endfor %}
+                    </div>
+                  {% endfor %}
+                </div>
+              </div>
+              <a href="https://github.com/gitcoinco/web/issues/5326" target="_blank" rel="noopener noreferrer">{% trans "Don't see the right schwag?  Request new avatar attributes here" %}</a>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    {% include 'shared/footer_scripts.html' %}
+    
+  </body>
+  <script>
+    var steps = [];
+    var flow = "{{flow}}"
+    {% for step in steps %}
+      steps.push("{{step}}");
+    {% endfor %};
+  </script>
+  <script src="{% static "v2/js/lib/jquery.js" %}"></script>
+  <script src="{% static "v2/js/lib/bootstrap.min.js" %}" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/3box/dist/3box.min.js"></script>
+  <script src="https://unpkg.com/ipfs/dist/index.min.js"></script>
+  <script src="{% static "v2/js/pages/onboard.js" %}"></script>
+  <script src="{% static "v2/js/avatar_builder.js" %}" defer></script>
+  <script src="{% static "v2/js/lib/ipfs-api.js" %}"></script>
+  <script>
+    var profileId = '{{ profile_id }}';
+    var options = {
+        Background: '{{ defaultBackground }}',
+        HairColor: '{{ defaultHairColor }}',
+        SkinTone: '{{ defaultSkinTone }}',
+        ClothingColor: '{{ defaultClothingColor }}'
+    }
+  </script>
+  <script src="{% static "v2/js/avatar.js" %}"></script>
+  <script src="{% static "v2/js/avatar3d.js" %}"></script>
+
+</html>

@@ -750,24 +750,18 @@ def onboard_avatar(request):
     return redirect('/onboard/contributor?steps=avatar')
 
 
-def onboard(request, flow=None):
+def builder(request, flow=None):
     """Handle ethdenver conference buffalo avatar builder."""
-    builder_steps = ['avatar']
-
-    steps = []
-    if request.GET:
-        steps = request.GET.get('steps', [])
-        if steps:
-            steps = steps.split(',')
+    steps = ['avatar']
 
     params = {
         'title': _('EthDenver Avatar Builder'),
-        'steps': steps or builder_steps,
+        'steps': steps,
         '3d_avatar_params': None if 'avatar' not in steps else avatar3dids_helper(),
         'possible_skin_tones': skin_tones,
         'possible_hair_tones': hair_tones,
     }
-    return TemplateResponse(request, 'ftux/onboard.html', params)
+    return TemplateResponse(request, 'ftux/builder.html', params)
 
 
 @login_required

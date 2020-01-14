@@ -16,19 +16,6 @@ $(document).ready(function() {
     return url;
   };
 
-  var convert_svg_text_to_png_blob = function() {};
-
-  function updateProfileData(box) {
-    box.public.all().then(profile => {
-      console.log(profile);
-      // let tmpData = "";
-      // Object.entries(profile).map(kv => {
-      //   tmpData += kv[0] + ": " + kv[1] + "<br />";
-      // });
-      // profileData.innerHTML = tmpData;
-    });
-  }
-
   $(".tdselection").click(function(e) {
     e.preventDefault();
     $(this)
@@ -117,7 +104,12 @@ $(document).ready(function() {
     });
   });
 
-  function save3DAvatar() {
+  async function save3DAvatarTo3Box() {
+    var repoPath = `ipfs-${Math.random()}`;
+    var ipfs = await Ipfs.create({ repo: repoPath });
+
+    var directoryName = "directory";
+
     $(document).ajaxStart(function() {
       loading_button($("#save-3d--avatar"));
     });
@@ -127,35 +119,72 @@ $(document).ready(function() {
     });
 
     var url = get_avatar_url();
-    var reader = new FileReader();
-    fetch(url, {
-      method: "POST",
-      body: JSON.stringify({ save: true }),
-      headers: {
-        "Content-Type": "application/json; charset=utf-8"
-      }
-    })
-      .then(response => response.text())
-      .then(response => {
-        // reader.readAsDataURL(response);
 
-        window.ethereum.enable().then(async function(accounts) {
-          Box.openBox(accounts[0], window.ethereum, {}).then(function(box) {
-            box.public.set("imgSrc", 'data:image/svg+xml;base64,' + window.btoa(response)).then(() => {
-              updateProfileData(box);
+    try {
+      fetch(url, {
+        method: "POST",
+        body: JSON.stringify({ save: true }),
+        headers: {
+          "Content-Type": "application/json; charset=utf-8"
+        }
+      })
+        .then(response => response.text())
+        .then(response => {
+          window.ethereum.enable().then(async function(accounts) {
+            Box.openBox(accounts[0], window.ethereum, {}).then(async function(
+              box
+            ) {
+              const file = {
+                path: `${directoryName}/avatar.svg`,
+                content: new Blob([response], {
+                  type: "image/svg+xml"
+                })
+              };
+              ipfs.add(file, function(err, hash) {
+                if (err) {
+                  let text = gettext(
+                    "Error occurred while saving. Please try again."
+                  );
+                  _alert({ message: text }, "error");
+                } else {
+                  box.public
+                    .set("ethdenver.avatar", `/ipfs/${hash[1].hash}/avatar.svg`)
+                    .then(success => {
+                      const imgObj = [
+                        {
+                          "@type": "ImageObject",
+                          contentUrl: {
+                            "/": `${hash[1].hash}/avatar.svg`
+                          }
+                        }
+                      ];
+                      box.public.set("image", imgObj).then(result => {
+                        _alert(
+                          {
+                            message: gettext(
+                              "Your avatar has been saved using your eth address on 3box!"
+                            )
+                          },
+                          "success"
+                        );
+                        box.close();
+                      });
+                    });
+                }
+              });
             });
           });
-          // _alert({ message: gettext('Your avatar has been saved using your eth address on 3box!')}, 'success');
         });
-      })
-      .catch(error => {
-        let text = gettext("Error occurred while saving. Please try again.");
-        _alert({ message: text }, "error");
-      });
+    } catch (error) {
+      let text = gettext("Error occurred while saving. Please try again.");
+      _alert({ message: text }, "error");
+    }
   }
+
+  
   $("#save-3d-avatar").click(function(event) {
     event.preventDefault();
-    save3DAvatar();
+    save3DAvatarTo3Box();
   });
 
   jQuery.fn.random = function() {

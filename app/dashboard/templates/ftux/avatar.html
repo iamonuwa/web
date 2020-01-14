@@ -70,9 +70,10 @@
   </div>
 </div>
 
-
 <script src="{% static "v2/js/lib/jquery.js" %}"></script>
 <script src="{% static "v2/js/lib/bootstrap.min.js" %}" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/ipfs/dist/index.min.js"></script>
+<script src="{% static "v2/js/lib/ipfs-api.js" %}"></script>
 <script>
   var profileId = '{{ profile_id }}';
   var options = {
