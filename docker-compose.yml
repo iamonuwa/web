@@ -49,9 +49,11 @@ services:
     image: gitcoinco/web:latest
     volumes:
       - .:/code
+      - /static:/static
     ports:
       - "8000:8000"
       - "3030:3030"
+    command: bash -c "cd /code/app && gunicorn -w 4 app.wsgi -b 0.0.0.0:8000"
     depends_on:
       - db
     stdin_open: true
@@ -63,6 +65,19 @@ services:
           memory: 1024M
         reservations:
           memory: 512M
+  nginx:
+    restart: always
+    container_name: nginx_server
+    build:
+      context: ./nginx/
+      dockerfile: Dockerfile
+    depends_on:
+      - web
+    ports:
+      - "0.0.0.0:8001:8001"
+    volumes:
+      - /static:/static
+        
 
   testrpc:
     image: trufflesuite/ganache-cli

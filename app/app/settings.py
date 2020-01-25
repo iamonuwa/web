@@ -248,7 +248,7 @@ AWS_LOG_STREAM = env('AWS_LOG_STREAM', default=f'{ENV}-web')
 # Sentry
 SENTRY_DSN = env.str('SENTRY_DSN', default='')
 SENTRY_JS_DSN = env.str('SENTRY_JS_DSN', default=SENTRY_DSN)
-RELEASE = raven.fetch_git_sha(os.path.abspath(os.pardir)) if ENV == 'prod' else ''
+# RELEASE = raven.fetch_git_sha(os.path.abspath(os.pardir)) if ENV == 'prod' else ''
 RAVEN_JS_VERSION = env.str('RAVEN_JS_VERSION', default='3.26.4')
 if SENTRY_DSN:
     sentry_sdk.init(
@@ -307,47 +307,47 @@ LOGGING = {
 }
 
 # Production logging
-if ENV not in ['local', 'test', 'staging', 'preview']:
-    # add AWS monitoring
-    boto3_session = Session(
-        aws_access_key_id=AWS_ACCESS_KEY_ID,
-        aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
-        region_name=AWS_DEFAULT_REGION
-    )
+# if ENV not in ['local', 'test', 'staging', 'preview']:
+#     # add AWS monitoring
+#     boto3_session = Session(
+#         aws_access_key_id=AWS_ACCESS_KEY_ID,
+#         aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
+#         region_name=AWS_DEFAULT_REGION
+#     )
 
-    LOGGING['formatters']['cloudwatch'] = {
-        'format': '%(hostname)s %(name)-12s [%(levelname)-8s] %(message)s',
-    }
-    LOGGING['handlers']['watchtower'] = {
-        'level': AWS_LOG_LEVEL,
-        'class': 'watchtower.django.DjangoCloudWatchLogHandler',
-        'boto3_session': boto3_session,
-        'log_group': AWS_LOG_GROUP,
-        'stream_name': AWS_LOG_STREAM,
-        'filters': ['host_filter'],
-        'formatter': 'cloudwatch',
-    }
-    LOGGING['loggers']['django.db.backends']['level'] = AWS_LOG_LEVEL
+#     LOGGING['formatters']['cloudwatch'] = {
+#         'format': '%(hostname)s %(name)-12s [%(levelname)-8s] %(message)s',
+#     }
+#     LOGGING['handlers']['watchtower'] = {
+#         'level': AWS_LOG_LEVEL,
+#         'class': 'watchtower.django.DjangoCloudWatchLogHandler',
+#         'boto3_session': boto3_session,
+#         'log_group': AWS_LOG_GROUP,
+#         'stream_name': AWS_LOG_STREAM,
+#         'filters': ['host_filter'],
+#         'formatter': 'cloudwatch',
+#     }
+#     LOGGING['loggers']['django.db.backends']['level'] = AWS_LOG_LEVEL
 
-    LOGGING['loggers']['django.request'] = LOGGING['loggers']['django.db.backends']
-    LOGGING['loggers']['django.security.*'] = LOGGING['loggers']['django.db.backends']
-    for ia in INSTALLED_APPS:
-        LOGGING['loggers'][ia] = LOGGING['loggers']['django.db.backends']
+#     LOGGING['loggers']['django.request'] = LOGGING['loggers']['django.db.backends']
+#     LOGGING['loggers']['django.security.*'] = LOGGING['loggers']['django.db.backends']
+#     for ia in INSTALLED_APPS:
+#         LOGGING['loggers'][ia] = LOGGING['loggers']['django.db.backends']
 
-    # add elasticsearch monitoring
-    if ENABLE_APM:
-        LOGGING['handlers']['elasticapm'] = {
-            'level': 'WARNING',
-            'class': 'elasticapm.contrib.django.handlers.LoggingHandler',
-        }
-        LOGGING['loggers']['elasticapm.errors'] = {
-            'level': 'ERROR',
-            'handlers': ['sentry', 'console'],
-            'propagate': False,
-        }
-        LOGGING['root']['handlers'] = ['sentry', 'elasticapm']
+#     # add elasticsearch monitoring
+#     if ENABLE_APM:
+#         LOGGING['handlers']['elasticapm'] = {
+#             'level': 'WARNING',
+#             'class': 'elasticapm.contrib.django.handlers.LoggingHandler',
+#         }
+#         LOGGING['loggers']['elasticapm.errors'] = {
+#             'level': 'ERROR',
+#             'handlers': ['sentry', 'console'],
+#             'propagate': False,
+#         }
+#         LOGGING['root']['handlers'] = ['sentry', 'elasticapm']
 
-GEOIP_PATH = env('GEOIP_PATH', default='/usr/share/GeoIP/')
+# GEOIP_PATH = env('GEOIP_PATH', default='/usr/share/GeoIP/')
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
