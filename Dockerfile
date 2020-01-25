@@ -24,12 +24,12 @@ RUN apt-get install -y wget
 RUN apt-get install -y python3-pip
 
 # GeoIP2 Data Files
-RUN mkdir -p /usr/share/GeoIP/ && \
-    wget http://geolite.maxmind.com/download/geoip/database/GeoLite2-City.mmdb.gz && \
-    wget http://geolite.maxmind.com/download/geoip/database/GeoLite2-Country.mmdb.gz && \
-    gunzip GeoLite2-City.mmdb.gz && \
-    gunzip GeoLite2-Country.mmdb.gz && \
-    mv *.mmdb /usr/share/GeoIP/
+# RUN mkdir -p /usr/share/GeoIP/ && \
+#     wget http://geolite.maxmind.com/download/geoip/database/GeoLite2-City.mmdb.gz && \
+#     wget http://geolite.maxmind.com/download/geoip/database/GeoLite2-Country.mmdb.gz && \
+#     gunzip GeoLite2-City.mmdb.gz && \
+#     gunzip GeoLite2-Country.mmdb.gz && \
+#     mv *.mmdb /usr/share/GeoIP/
 
 # Upgrade package essentials.
 RUN pip3 install --upgrade pip setuptools wheel dumb-init pipenv
