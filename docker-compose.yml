@@ -53,7 +53,6 @@ services:
     ports:
       - "8000:8000"
       - "3030:3030"
-    command: bash -c "cd /code/app && gunicorn -w 4 app.wsgi -b 0.0.0.0:8000"
     depends_on:
       - db
     stdin_open: true
